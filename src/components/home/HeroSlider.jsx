@@ -37,34 +37,59 @@ const FALLBACK_SLIDES = [
   },
 ];
 
-// Zoom-in then zoom-out animation — stays in place, no horizontal movement
+// ─── Animation variants ───────────────────────────────────────────────────────
+// Slide stays 7 s visible. Zoom starts at 1.0 and slowly drifts to 1.10 —
+// a very gentle Ken Burns "push" feel. On exit the fade removes it while the
+// incoming slide fades in from 1.0, so there's no abrupt jump.
+const BG_SCALE_START = 1.0;
+const BG_SCALE_END   = 1.10;
+const ZOOM_DURATION  = 9;   // seconds — slow, premium
+const FADE_IN_DUR    = 1.1; // crossfade in
+const FADE_OUT_DUR   = 1.0; // crossfade out
+const INTERVAL_MS    = 7000; // 7 s per slide
+
 const bgVariants = {
-  enter: { opacity: 0, scale: 1.08 },
+  enter: {
+    opacity: 0,
+    scale: BG_SCALE_START,
+  },
   active: {
     opacity: 1,
-    scale: 1.0,
-    transition: { opacity: { duration: 0.9, ease: 'easeInOut' }, scale: { duration: 6, ease: 'easeOut' } },
+    scale: BG_SCALE_END,
+    transition: {
+      opacity: { duration: FADE_IN_DUR, ease: [0.4, 0, 0.2, 1] },
+      scale:   { duration: ZOOM_DURATION, ease: [0.25, 0.1, 0.25, 1] },
+    },
   },
-  // Zoom continues to 1.08 as the slide exits, creating a smooth handoff
   exit: {
     opacity: 0,
-    scale: 1.08,
-    transition: { opacity: { duration: 0.8, ease: 'easeInOut' }, scale: { duration: 0.8, ease: 'easeIn' } },
+    scale: BG_SCALE_END, // keep current scale on exit — no snap
+    transition: {
+      opacity: { duration: FADE_OUT_DUR, ease: [0.4, 0, 1, 1] },
+      scale:   { duration: FADE_OUT_DUR, ease: 'linear' },
+    },
   },
 };
 
-// Content fades in from slightly below — no x movement
+// Content: gentle fade + upward drift, no horizontal movement
 const contentVariants = {
-  enter: { opacity: 0, y: 24 },
-  active: { opacity: 1, y: 0, transition: { delay: 0.35, duration: 0.7, ease: 'easeOut' } },
-  exit: { opacity: 0, y: -12, transition: { duration: 0.4, ease: 'easeIn' } },
+  enter: { opacity: 0, y: 28 },
+  active: {
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.45, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] },
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    transition: { duration: 0.45, ease: [0.4, 0, 1, 1] },
+  },
 };
 
 export default function HeroSlider() {
-  const [slides, setSlides] = useState(FALLBACK_SLIDES);
+  const [slides, setSlides]   = useState(FALLBACK_SLIDES);
   const [current, setCurrent] = useState(0);
-  const timerRef = useRef(null);
-  const INTERVAL = 6000;
+  const timerRef              = useRef(null);
 
   useEffect(() => {
     api.get('/settings/banners?type=hero').then((res) => {
@@ -72,16 +97,17 @@ export default function HeroSlider() {
     }).catch(() => {});
   }, []);
 
-  const startTimer = () => {
+  const startTimer = (len = slides.length) => {
     clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length);
-    }, INTERVAL);
+    if (len < 2) return;
+    timerRef.current = setInterval(
+      () => setCurrent((c) => (c + 1) % len),
+      INTERVAL_MS
+    );
   };
 
   useEffect(() => {
-    if (slides.length < 2) return;
-    startTimer();
+    startTimer(slides.length);
     return () => clearInterval(timerRef.current);
   }, [slides.length]);
 
@@ -89,17 +115,16 @@ export default function HeroSlider() {
     setCurrent(idx);
     startTimer();
   };
-  const goNext = () => goTo((current + 1) % slides.length);
-  const goPrev = () => goTo((current - 1 + slides.length) % slides.length);
 
   const slide = slides[current];
 
   return (
     <section
       className="relative w-full overflow-hidden"
-      style={{ height: 'clamp(420px, 65vh, 700px)' }}
+      // Desktop: tall hero. Mobile: shorter so content is always visible.
+      style={{ height: 'clamp(360px, 58vw, 700px)' }}
     >
-      {/* Background layer — zoom in/out + crossfade, NO horizontal movement */}
+      {/* ── Background layer: zoom + crossfade, zero horizontal movement ── */}
       <AnimatePresence mode="sync" initial={false}>
         <motion.div
           key={`bg-${current}`}
@@ -108,35 +133,52 @@ export default function HeroSlider() {
           animate="active"
           exit="exit"
           className="absolute inset-0"
-          style={{ transformOrigin: 'center center' }}
+          style={{ transformOrigin: 'center center', willChange: 'transform, opacity' }}
         >
           {slide.desktop_image ? (
             <img
               src={slide.desktop_image}
               alt={slide.heading || 'AYASOFYA'}
-              className="w-full h-full object-cover"
-              style={{ display: 'block' }}
+              // object-cover keeps aspect ratio; position ensures focal point stays centred
+              className="w-full h-full object-cover object-center"
+              draggable={false}
             />
           ) : (
             <div
               className="w-full h-full"
               style={{ background: slide.bg || `linear-gradient(135deg, ${G}, #0d2218)` }}
             >
-              {/* Decorative rings */}
+              {/* Decorative rings — pointer-events-none so they don't block touch */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-8 right-[8%] w-72 h-72 border rounded-full opacity-10" style={{ borderColor: GOLD }} />
-                <div className="absolute top-16 right-[12%] w-52 h-52 border rounded-full opacity-10" style={{ borderColor: GOLD }} />
-                <div className="absolute -bottom-16 -left-8 w-80 h-80 border rounded-full opacity-5" style={{ borderColor: '#fff' }} />
-                <div className="absolute top-0 left-0 w-1.5 h-full opacity-70" style={{ background: `linear-gradient(to bottom, ${GOLD}, transparent)` }} />
+                <div
+                  className="absolute top-8 right-[8%] w-72 h-72 border rounded-full opacity-10"
+                  style={{ borderColor: GOLD }}
+                />
+                <div
+                  className="absolute top-16 right-[12%] w-52 h-52 border rounded-full opacity-10"
+                  style={{ borderColor: GOLD }}
+                />
+                <div
+                  className="absolute -bottom-16 -left-8 w-80 h-80 border rounded-full opacity-5"
+                  style={{ borderColor: '#fff' }}
+                />
+                <div
+                  className="absolute top-0 left-0 w-1.5 h-full opacity-60"
+                  style={{ background: `linear-gradient(to bottom, ${GOLD}, transparent)` }}
+                />
               </div>
             </div>
           )}
-          {/* Dark overlay */}
-          <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.38)' }} />
+
+          {/* Dark overlay — slightly heavier on mobile so text stays readable */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'rgba(0,0,0,0.40)' }}
+          />
         </motion.div>
       </AnimatePresence>
 
-      {/* Content layer — fade + gentle rise, NO horizontal movement */}
+      {/* ── Content layer: fade + rise, zero horizontal movement ── */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={`content-${current}`}
@@ -146,22 +188,22 @@ export default function HeroSlider() {
           exit="exit"
           className="absolute inset-0 flex items-center"
         >
-          <div className="max-w-7xl mx-auto px-5 sm:px-12 w-full">
+          <div className="max-w-7xl mx-auto w-full px-5 sm:px-10 lg:px-12">
             <div className="max-w-xl">
               {/* Badge */}
               <span
-                className="inline-block text-xs font-bold tracking-[0.25em] uppercase px-4 py-1.5 rounded mb-4"
+                className="inline-block text-xs font-bold tracking-[0.22em] uppercase px-3.5 py-1.5 rounded mb-3 sm:mb-4"
                 style={{ background: GOLD, color: G }}
               >
                 {slide.subtitle || 'Premium Collection 2024'}
               </span>
 
-              {/* Heading */}
+              {/* Heading — fluid font size so it fits on small screens */}
               <h1
-                className="text-white mb-4 leading-tight"
+                className="text-white mb-3 sm:mb-4 leading-tight"
                 style={{
                   fontFamily: "'Playfair Display', serif",
-                  fontSize: 'clamp(2rem, 6vw, 3.8rem)',
+                  fontSize: 'clamp(1.65rem, 5.5vw, 3.8rem)',
                   fontWeight: 700,
                 }}
               >
@@ -175,39 +217,39 @@ export default function HeroSlider() {
               {/* Subheading */}
               {slide.subheading && (
                 <p
-                  className="text-base md:text-lg mb-8 font-light"
+                  className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 font-light"
                   style={{ color: 'rgba(255,255,255,0.82)' }}
                 >
                   {slide.subheading}
                 </p>
               )}
 
-              {/* CTA */}
+              {/* CTA buttons */}
               {slide.button_text && (
-                <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
                   <Link
                     to={slide.button_url || '/shop'}
-                    className="inline-flex items-center gap-2 font-bold px-8 py-3.5 rounded-xl text-sm tracking-wider uppercase transition-all hover:opacity-90 shadow-lg"
-                    style={{ background: GOLD, color: G }}
+                    className="inline-flex items-center gap-2 font-bold px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl text-sm tracking-wider uppercase transition-opacity hover:opacity-90 shadow-lg"
+                    style={{ background: GOLD, color: G, minHeight: 44 }}
                   >
                     {slide.button_text}
                   </Link>
                   <Link
                     to="/shop"
                     className="text-sm underline underline-offset-4 transition-opacity hover:opacity-100"
-                    style={{ color: 'rgba(255,255,255,0.6)' }}
+                    style={{ color: 'rgba(255,255,255,0.62)' }}
                   >
                     View All
                   </Link>
                 </div>
               )}
 
-              {/* Trust badges */}
-              <div className="flex items-center gap-5 mt-8 flex-wrap">
+              {/* Trust badges — hidden on very small screens to avoid clutter */}
+              <div className="hidden sm:flex items-center gap-5 mt-7 flex-wrap">
                 {['Free Delivery', '7-Day Return', 'Authentic Quality'].map((badge) => (
                   <div key={badge} className="flex items-center gap-1.5">
                     <span
-                      className="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold"
+                      className="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold flex-shrink-0"
                       style={{ background: GOLD, color: G }}
                     >
                       ✓
@@ -223,43 +265,42 @@ export default function HeroSlider() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation — only when multiple slides */}
+      {/* ── Navigation controls ── */}
       {slides.length > 1 && (
         <>
           <button
-            onClick={goPrev}
+            onClick={() => goTo((current - 1 + slides.length) % slides.length)}
             aria-label="Previous slide"
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white rounded-full p-2.5 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            style={{ background: 'rgba(0,0,0,0.35)' }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = GOLD)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(0,0,0,0.35)')}
+            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-10 text-white rounded-full p-2 sm:p-2.5 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            style={{ background: 'rgba(0,0,0,0.38)', minWidth: 40, minHeight: 40 }}
           >
             <ChevronLeft size={20} />
           </button>
 
           <button
-            onClick={goNext}
+            onClick={() => goTo((current + 1) % slides.length)}
             aria-label="Next slide"
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white rounded-full p-2.5 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            style={{ background: 'rgba(0,0,0,0.35)' }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = GOLD)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(0,0,0,0.35)')}
+            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-10 text-white rounded-full p-2 sm:p-2.5 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            style={{ background: 'rgba(0,0,0,0.38)', minWidth: 40, minHeight: 40 }}
           >
             <ChevronRight size={20} />
           </button>
 
-          {/* Dot indicators */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
+          {/* Dot indicators — larger tap targets on mobile */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2 items-center">
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
-                className="transition-all rounded-full focus:outline-none"
+                className="rounded-full transition-all focus:outline-none"
                 style={{
                   width: i === current ? 24 : 8,
                   height: 8,
+                  minWidth: 8,
+                  minHeight: 8,
                   background: i === current ? GOLD : 'rgba(255,255,255,0.5)',
+                  padding: 0,
                 }}
               />
             ))}

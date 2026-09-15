@@ -171,7 +171,16 @@ export default function Footer() {
       <div className="border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>© 2024 AYASOFYA. All rights reserved.</p>
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>ayasofyabrand@gmail.com</p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>ayasofyabrand@gmail.com</p>
+            <Link
+              to="/admin/login"
+              className="text-xs font-medium transition-opacity hover:opacity-80"
+              style={{ color: GOLD, opacity: 0.6 }}
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
 
