@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #1a3a2a;
+  --color-brand-green-dark: #0d2218;
+  --color-brand-green-light: #2a5c3f;
+  --color-brand-gold: #f5c518;
+  --color-brand-gold-light: #f7d454;
+  --color-brand-cream: #fffbe6;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #1a3a2a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2a5c3f; }
+
+.swiper-pagination-bullet { background: #fff !important; opacity: 0.6 !important; }
+.swiper-pagination-bullet-active { background: #f5c518 !important; opacity: 1 !important; width: 24px !important; border-radius: 4px !important; }
+.swiper-button-next, .swiper-button-prev { color: #fff !important; }
+.swiper-button-next::after, .swiper-button-prev::after { font-size: 18px !important; font-weight: 700 !important; }
+
+.line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+.line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.transition-all { transition: all 0.3s ease; }
+
+.gradient-gold { background: linear-gradient(135deg, #f5c518, #f7d454); }
+.gradient-green { background: linear-gradient(135deg, #1a3a2a, #2a5c3f); }
+
+.header-sticky { position: sticky; top: 0; z-index: 50; }
+
+.product-card:hover .product-actions { opacity: 1; transform: translateY(0); }
+.product-actions { opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+
+.badge-discount { background: #f5c518; color: #1a1a1a; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.badge-new { background: #1a3a2a; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.badge-hot { background: #e74c3c; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+
+@media (max-width: 768px) { .mobile-nav-open { overflow: hidden; } }
+@media print { .no-print { display: none !important; } .print-only { display: block !important; } }
