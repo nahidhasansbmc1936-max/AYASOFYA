@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Trash2, ShoppingCart } from 'lucide-react';
 import api from '../../api/axios';
-import { formatPrice } from '../../utils/format';
+import { formatPrice, imgUrl } from '../../utils/format';
 import useCartStore from '../../store/useCartStore';
 import toast from 'react-hot-toast';
 const G='#1a3a2a';const GOLD='#f5c518';
@@ -21,7 +21,7 @@ export default function WishlistTab() {
       ):(
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {items.map(item=>{
-            const imgs=JSON.parse(item.images||'[]');
+            const imgs=JSON.parse(item.images||'[]').map(imgUrl);
             return(
               <div key={item.id} className="group border-2 border-gray-100 rounded-xl overflow-hidden hover:border-opacity-50 transition-all">
                 <Link to={`/product/${item.slug}`} className="block relative aspect-[3/4]" style={{background:'#fffbe6'}}>

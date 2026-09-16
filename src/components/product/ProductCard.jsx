@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { formatPrice } from '../../utils/format';
+import { formatPrice, imgUrl } from '../../utils/format';
 import useCartStore from '../../store/useCartStore';
 import useAuthStore from '../../store/useAuthStore';
 import api from '../../api/axios';
@@ -20,7 +20,7 @@ export default function ProductCard({ product, index = 0 }) {
   if (!product) return null;
 
   const images = Array.isArray(product.images) ? product.images : JSON.parse(product.images || '[]');
-  const img = images[0];
+  const img = imgUrl(images[0]);
   const price = product.sale_price || product.regular_price;
   const hasDiscount = product.sale_price && product.sale_price < product.regular_price;
   const discount = hasDiscount ? Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100) : 0;

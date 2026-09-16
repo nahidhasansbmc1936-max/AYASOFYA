@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Upload, Trash2, Copy } from 'lucide-react';
 import { adminApi } from '../../api/axios';
+import { imgUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 const G='#1a3a2a';
 export default function AdminMediaPage() {
@@ -22,7 +23,7 @@ export default function AdminMediaPage() {
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
         {files.map(file=>(
           <div key={file.id} className="group relative aspect-square bg-gray-100 rounded-xl overflow-hidden border-2 border-transparent hover:border-green-600 transition-all cursor-pointer">
-            <img src={file.url} alt={file.original_name} className="w-full h-full object-cover"/>
+            <img src={imgUrl(file.url)} alt={file.original_name} className="w-full h-full object-cover"/>
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
               <button onClick={()=>copy(file.url)} className="p-1.5 bg-white text-gray-700 rounded-lg"><Copy size={12}/></button>
               <button onClick={()=>del(file.id)} className="p-1.5 bg-red-500 text-white rounded-lg"><Trash2 size={12}/></button>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Calendar, User } from 'lucide-react';
 import api from '../api/axios';
-import { formatDate } from '../utils/format';
+import { formatDate, imgUrl } from '../utils/format';
 const G='#1a3a2a';const GOLD='#f5c518';
 export function BlogListPage() {
   const [posts,setPosts]=useState([]);const [loading,setLoading]=useState(true);
@@ -17,7 +17,7 @@ export function BlogListPage() {
           {posts.map(post=>(
             <Link key={post.id} to={`/blog/${post.slug}`} className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow">
               <div className="aspect-video overflow-hidden" style={{background:'#fffbe6'}}>
-                {post.featured_image?<img src={post.featured_image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>:<div className="w-full h-full flex items-center justify-center text-4xl">📝</div>}
+                {post.featured_image?<img src={imgUrl(post.featured_image)} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>:<div className="w-full h-full flex items-center justify-center text-4xl">📝</div>}
               </div>
               <div className="p-4">
                 {post.category_name&&<span className="text-xs font-semibold uppercase" style={{color:GOLD}}>{post.category_name}</span>}
@@ -50,7 +50,7 @@ export function BlogPostPage() {
           {post.author_name&&<span className="flex items-center gap-1"><User size={13}/>{post.author_name}</span>}
           <span className="flex items-center gap-1"><Calendar size={13}/>{formatDate(post.published_at)}</span>
         </div>
-        {post.featured_image&&<img src={post.featured_image} alt={post.title} className="w-full rounded-2xl mb-8 object-cover max-h-72"/>}
+        {post.featured_image&&<img src={imgUrl(post.featured_image)} alt={post.title} className="w-full rounded-2xl mb-8 object-cover max-h-72"/>}
         <div className="prose max-w-none text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{__html:post.content||post.excerpt||''}}/>
       </article>
     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, Eye, Package } from 'lucide-react';
 import { adminApi } from '../../api/axios';
-import { formatPrice } from '../../utils/format';
+import { formatPrice, imgUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 
 const G = '#1a3a2a';
@@ -76,7 +76,7 @@ export default function AdminProductsPage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                        {p.images?.[0] ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" /> : <Package size={16} className="text-gray-400 m-auto mt-2.5" />}
+                        {p.images?.[0] ? <img src={imgUrl(p.images[0])} alt={p.name} className="w-full h-full object-cover" /> : <Package size={16} className="text-gray-400 m-auto mt-2.5" />}
                       </div>
                       <div>
                         <p className="font-semibold text-gray-800 text-xs md:text-sm line-clamp-1">{p.name}</p>

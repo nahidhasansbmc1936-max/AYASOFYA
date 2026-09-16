@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Upload, X } from 'lucide-react';
 import { adminApi } from '../../api/axios';
+import { imgUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 
 const G = '#1a3a2a';
@@ -274,7 +275,7 @@ export default function AdminProductFormPage() {
                 {/* Existing images */}
                 {existingImages.map((img, i) => (
                   <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img src={imgUrl(img)} alt="" className="w-full h-full object-cover" />
                   </div>
                 ))}
                 {/* New image previews */}

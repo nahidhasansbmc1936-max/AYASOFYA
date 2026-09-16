@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Heart, Share2, Truck, RotateCcw, ShieldCheck, ChevronRight, Minus, Plus, ShoppingCart, Zap, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { formatPrice } from '../utils/format';
+import { formatPrice, imgUrl } from '../utils/format';
 import useCartStore from '../store/useCartStore';
 import useAuthStore from '../store/useAuthStore';
 import api from '../api/axios';
@@ -27,7 +27,7 @@ export default function ProductDetailPage() {
   );
   if(!data?.product) return null;
   const {product,variations=[],reviews=[],related=[]}=data;
-  const images=product.images||[];const img=images[activeImg];
+  const images=(product.images||[]).map(imgUrl); const img=images[activeImg];
   const price=product.sale_price||product.regular_price;
   const hasDiscount=product.sale_price&&product.sale_price<product.regular_price;
   const outOfStock=product.stock_status==='out_of_stock';
