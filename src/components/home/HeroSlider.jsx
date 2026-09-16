@@ -111,7 +111,7 @@ export default function HeroSlider() {
         {/* ── TWO CENTRED BUTTONS — no heading, no description ── */}
         {(btn1 || btn2) && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 px-6">
+            <div className="flex flex-col items-center gap-4 px-6">
               {/* Button 1 */}
               {btn1 && (
                 <Link
