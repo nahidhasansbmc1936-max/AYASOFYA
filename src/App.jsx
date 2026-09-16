@@ -30,6 +30,7 @@ import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
 import AdminBannersPage from './pages/admin/AdminBannersPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
+import AdminAccountPage from './pages/admin/AdminAccountPage';
 
 const AdminCustomersPage = lazy(() => import('./pages/admin/AdminCustomersPage'));
 const AdminReviewsPage = lazy(() => import('./pages/admin/AdminReviewsPage'));
@@ -128,6 +129,7 @@ export default function App() {
           <Route path="banners" element={<AdminBannersPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="customizer" element={<AdminSettingsPage />} />
+          <Route path="account" element={<AdminAccountPage />} />
           <Route path="homepage" element={<AdminHomepagePage />} />
           <Route path="customers" element={<Suspense fallback={<Spin />}><AdminCustomersPage /></Suspense>} />
           <Route path="reviews" element={<Suspense fallback={<Spin />}><AdminReviewsPage /></Suspense>} />

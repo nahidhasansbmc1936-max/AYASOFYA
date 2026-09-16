@@ -3,7 +3,7 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Tags, ShoppingCart, Users, Image as ImageIcon,
   FileText, Settings, LogOut, Menu, X, Percent, MessageSquare, Globe,
-  BookOpen, Sliders, ChevronRight,
+  BookOpen, Sliders, ChevronRight, ShieldCheck,
 } from 'lucide-react';
 import useAdminStore from '../../store/useAdminStore';
 
@@ -26,6 +26,7 @@ const NAV = [
   { label: 'Homepage',   icon: Globe,           path: '/admin/homepage' },
   { label: 'Customizer', icon: Sliders,         path: '/admin/customizer' },
   { label: 'Settings',   icon: Settings,        path: '/admin/settings' },
+  { label: 'Account',    icon: ShieldCheck,     path: '/admin/account' },
 ];
 
 export default function AdminLayout() {
