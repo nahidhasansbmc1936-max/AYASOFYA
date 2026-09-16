@@ -109,10 +109,10 @@ export default function AdminProductFormPage() {
       imgFiles.forEach((f) => fd.append('images', f));
 
       if (isEdit) {
-        await adminApi.put(`/products/admin/${id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await adminApi.put(`/products/admin/${id}`, fd);
         toast.success('Product updated!');
       } else {
-        await adminApi.post('/products/admin', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await adminApi.post('/products/admin', fd);
         toast.success('Product created!');
       }
       navigate('/admin/products');
