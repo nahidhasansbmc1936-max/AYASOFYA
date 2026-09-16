@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Save, Upload } from 'lucide-react';
 import { adminApi } from '../../api/axios';
+import { imgUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 
 const G = '#1a3a2a';
@@ -77,7 +78,7 @@ export default function AdminSettingsPage() {
     const fd = new FormData();
     fd.append('file', file);
     try {
-      const res = await adminApi.post(`/settings/admin/upload/${type}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const res = await adminApi.post(`/settings/admin/upload/${type}`, fd);
       setSettings(prev => ({ ...prev, [res.data.key]: res.data.url }));
       toast.success('Uploaded successfully!');
     } catch { toast.error('Upload failed'); }
@@ -132,7 +133,7 @@ export default function AdminSettingsPage() {
                 <div key={item.type} className="flex items-center gap-5">
                   <div className="w-28 h-16 rounded-xl flex items-center justify-center overflow-hidden" style={{ background: G }}>
                     {settings[item.key]
-                      ? <img src={settings[item.key]} alt={item.label} className="max-w-full max-h-full object-contain p-2" />
+                      ? <img src={imgUrl(settings[item.key])} alt={item.label} className="max-w-full max-h-full object-contain p-2" />
                       : <span className="text-white/40 text-xs">{item.label}</span>}
                   </div>
                   <div>

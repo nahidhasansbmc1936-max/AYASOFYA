@@ -4,6 +4,7 @@ import { Search, Phone, User, Heart, ShoppingCart, Menu, X, ChevronDown, LogOut 
 import useCartStore from '../../store/useCartStore';
 import useAuthStore from '../../store/useAuthStore';
 import useSettingsStore from '../../store/useSettingsStore';
+import { imgUrl } from '../../utils/format';
 
 // Brand colors from AYASOFYA identity
 const G = '#1a3a2a';   // Dark Green
@@ -119,8 +120,12 @@ export default function Header() {
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
 
-            {/* Logo */}
-            <Link to="/"><AyasofyaLogo /></Link>
+            {/* Logo — uses uploaded logo_url from settings if available, else SVG fallback */}
+            <Link to="/" className="flex-shrink-0">
+              {getSetting('logo_url')
+                ? <img src={imgUrl(getSetting('logo_url'))} alt={getSetting('site_name','AYASOFYA')} style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
+                : <AyasofyaLogo />}
+            </Link>
 
             {/* Search — desktop */}
             <div className="hidden md:flex flex-1 max-w-xl">
