@@ -146,6 +146,7 @@ export default function HeroSlider() {
                     fontSize: 'clamp(12px, 3vw, 16px)',
                     letterSpacing: '0.18em',
                     display: 'block',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {btn2}
@@ -155,28 +156,6 @@ export default function HeroSlider() {
           </div>
         )}
 
-        {/* ── Slide dots (multiple slides only) ── */}
-        {slides.length > 1 && (
-          <div
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"
-            style={{ zIndex: 10 }}
-          >
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                aria-label={`Slide ${i + 1}`}
-                className="rounded-full transition-all focus:outline-none"
-                style={{
-                  width:      i === current ? 24 : 8,
-                  height:     8,
-                  background: i === current ? GOLD : 'rgba(255,255,255,0.5)',
-                  padding:    0,
-                }}
-              />
-            ))}
-          </div>
-        )}
       </section>
     </>
   );
