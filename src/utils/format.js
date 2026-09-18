@@ -37,8 +37,7 @@ export const truncate = (str, n = 80) => str?.length > n ? str.slice(0, n) + '..
 export const imgUrl = (p) => {
   if (!p) return '/placeholder.jpg';
   if (p.startsWith('http')) return p;
-  // In production the backend is on a different domain (Render),
-  // so /uploads/... paths must be prefixed with the backend URL.
+  // Both /api/media/img/:id and /uploads/... paths need the backend prefix in production
   const backend = (import.meta.env.VITE_API_URL || 'https://ayasofya-backend.onrender.com').replace(/\/$/, '');
   return backend + p;
 };

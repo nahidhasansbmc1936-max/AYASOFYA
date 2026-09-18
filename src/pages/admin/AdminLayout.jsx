@@ -21,7 +21,7 @@ const NAV = [
   { label: 'Reviews',    icon: MessageSquare,   path: '/admin/reviews' },
   { label: 'Blog',       icon: BookOpen,        path: '/admin/blog' },
   { label: 'Banners',    icon: ImageIcon,       path: '/admin/banners' },
-  { label: 'Media',      icon: ImageIcon,       path: '/admin/media' },
+  { label: 'Photo Gallery', icon: ImageIcon,       path: '/admin/media' },
   { label: 'Pages',      icon: FileText,        path: '/admin/pages' },
   { label: 'Homepage',   icon: Globe,           path: '/admin/homepage' },
   { label: 'Customizer', icon: Sliders,         path: '/admin/customizer' },

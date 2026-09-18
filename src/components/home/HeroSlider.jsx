@@ -111,20 +111,21 @@ export default function HeroSlider() {
         {/* ── TWO CENTRED BUTTONS — no heading, no description ── */}
         {(btn1 || btn2) && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-4 px-6">
+            {/* gap-4 on all screens — same as before on desktop, wraps nicely on mobile */}
+            <div className="flex flex-col items-center gap-4 px-4 w-full" style={{ maxWidth: 340 }}>
               {/* Button 1 */}
               {btn1 && (
                 <Link
                   to={btn1Url}
-                  className="font-bold tracking-widest uppercase text-center transition-all hover:scale-105 active:scale-95 shadow-lg"
+                  className="font-bold tracking-widest uppercase text-center transition-all hover:scale-105 active:scale-95 shadow-lg w-full"
                   style={{
                     background: GOLD,
                     color: G,
-                    padding: '14px 36px',
+                    padding: 'clamp(10px,2.5vw,14px) clamp(20px,5vw,36px)',
                     borderRadius: 12,
-                    fontSize: 'clamp(13px, 2.5vw, 16px)',
-                    minWidth: 160,
+                    fontSize: 'clamp(12px, 3vw, 16px)',
                     letterSpacing: '0.18em',
+                    display: 'block',
                   }}
                 >
                   {btn1}
@@ -135,16 +136,16 @@ export default function HeroSlider() {
               {btn2 && (
                 <Link
                   to={btn2Url}
-                  className="font-bold tracking-widest uppercase text-center transition-all hover:scale-105 active:scale-95 shadow-lg"
+                  className="font-bold tracking-widest uppercase text-center transition-all hover:scale-105 active:scale-95 shadow-lg w-full"
                   style={{
                     background: 'transparent',
                     color: '#fff',
                     border: `2.5px solid ${GOLD}`,
-                    padding: '12px 34px',
+                    padding: 'clamp(8px,2.5vw,12px) clamp(18px,5vw,34px)',
                     borderRadius: 12,
-                    fontSize: 'clamp(13px, 2.5vw, 16px)',
-                    minWidth: 160,
+                    fontSize: 'clamp(12px, 3vw, 16px)',
                     letterSpacing: '0.18em',
+                    display: 'block',
                   }}
                 >
                   {btn2}
